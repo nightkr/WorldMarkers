@@ -250,6 +250,10 @@ function WorldMarkers:SetMarker(i, loc, noBroadcast)
 end
 
 function WorldMarkers:OnChatMessage(channel, msg)
+	if not self:PlayerMayMark(msg.strSender) then
+		return
+	end
+
 	local assembled = ""
 	local segs = msg.arMessageSegments
 	for i=1,#segs do
@@ -301,7 +305,8 @@ end
 
 function WorldMarkers:PlayerMayMark(name)
 	if GroupLib.InGroup() then
-		return self:FindGroupMember(name).bCanMark
+		local member = self:FindGroupMember(name)
+		return member ~= nil and member.bCanMark
 	else
 		return GameLib.GetPlayerUnit():GetName() == name
 	end
