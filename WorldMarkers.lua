@@ -271,8 +271,6 @@ function WorldMarkers:OnChatMessage(channel, msg)
 		table.insert(words, word)
 	end
 
-	SendVarToRover("words", words)
-
 	if words[1] == CHATPREFIX then
 		if words[2] == "set" then
 			local index = tonumber(words[3])
