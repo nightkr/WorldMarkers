@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Addon Author="teozkr" APIVersion="8" Name="WorldMarkers" Description="">
+	<Script Name="libs\GeminiLogging.lua"/>
+	<Script Name="libs\GeminiGUI.lua"/>
+    <Script Name="WorldMarkers.lua"/>
+    <Form Name="WorldMarkers.xml"/>
+</Addon>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<Forms>
+    <Form Class="Window" LAnchorPoint="0.00000" LAnchorOffset="0" TAnchorPoint="0.00000" TAnchorOffset="0" RAnchorPoint="1" RAnchorOffset="454" BAnchorPoint="1" BAnchorOffset="215" RelativeToClient="1" Font="Default" Text="" Template="Default" Name="WorldMarkersForm" Border="0" Picture="0" SwallowMouseClicks="0" Moveable="0" Escapable="0" Overlapped="1" BGColor="ffffffff" TextColor="ffffffff" TextId="" TooltipColor="" Tooltip="" NotRelative="0" NoClip="1" Visible="1" IgnoreMouse="1" NeverBringToFront="1"/>
+    <Form Class="Window" LAnchorPoint="1" LAnchorOffset="-300" TAnchorPoint="1" TAnchorOffset="-150" RAnchorPoint="1" RAnchorOffset="-20" BAnchorPoint="1" BAnchorOffset="-100" RelativeToClient="1" Font="Default" Text="" BGColor="UI_WindowBGDefault" TextColor="UI_WindowTextDefault" Template="Holo_InputBox" TooltipType="OnCursor" Name="WorldMarkersPlacementForm" Border="1" Picture="1" SwallowMouseClicks="1" Moveable="1" Escapable="1" Overlapped="1" TooltipColor=""/>
+</Forms>
