@@ -217,12 +217,7 @@ function WorldMarkers:OnTimer()
 		local m = self.markers[i]
 		if m.worldLoc ~= nil then
 			local screenPos = GameLib.WorldLocToScreenPoint(m.worldLoc)
-			self.wndMain:UpdatePixie(m.pixie, {
-				strSprite = m.sprite,
-				loc = {
-					nOffsets = {screenPos.x-25,screenPos.y-25,screenPos.x+25,screenPos.y+25}
-				}
-			})
+			self.wndMain:UpdatePixie(m.pixie, self:GenMarkerPixie(i))
 		end
 	end
 end
