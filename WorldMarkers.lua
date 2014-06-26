@@ -196,10 +196,8 @@ function WorldMarkers:OnDocLoaded()
 		Apollo.RegisterEventHandler("Group_Left", "OnGroupStateChanged", self)
 		Apollo.RegisterEventHandler("Group_MemberFlagsChanged", "OnGroupStateChanged", self)
 
-		Apollo.RegisterEventHandler("ChatMessage", "OnChatMessage", self)
-
-
-		-- Do additional Addon initialization here
+		-- Apollo.RegisterEventHandler("ChatMessage", "OnChatMessage", self)
+		self.channel = ICCommLib.JoinChannel("WorldMarkers", "OnChatMessage", self)
 	end
 end
 
@@ -245,11 +243,13 @@ function WorldMarkers:SetMarker(i, loc, noBroadcast)
 	marker.pixie = self.wndMain:AddPixie(self:GenMarkerPixie(i))
 
 	if GroupLib.InGroup() and not noBroadcast then
-		ChatSystemLib.Command("/p "..CHATPREFIX.." set "..i.." "..loc.x.." "..loc.y.." "..loc.z)
+		self.channel:SendMessage(CHATPREFIX.." set "..i.." "..loc.x.." "..loc.y.." "..loc.z)
 	end
 end
 
 function WorldMarkers:OnChatMessage(channel, msg)
+	Print("hi")
+
 	local assembled = ""
 	local segs = msg.arMessageSegments
 	for i=1,#segs do
@@ -263,6 +263,8 @@ function WorldMarkers:OnChatMessage(channel, msg)
 	for word in assembled:gmatch("[^ ]+") do
 		table.insert(words, word)
 	end
+
+	SendVarToRover("words", words)
 
 	if words[1] == CHATPREFIX then
 		if words[2] == "set" then
@@ -322,3 +324,5 @@ end
 -----------------------------------------------------------------------------------------------
 local WorldMarkersInst = WorldMarkers:new()
 WorldMarkersInst:Init()
+
+wm = WorldMarkersInst
