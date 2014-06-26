@@ -191,16 +191,16 @@ function WorldMarkers:OnDocLoaded()
 		end
 		
 	    self.wndMain:Show(true, true)
-		self.wndPlacement:Show(true, true)
+		self.wndPlacement:Show(self:UnitMayMark(GameLib.GetPlayerUnit()), true)
 	
-		-- if the xmlDoc is no longer needed, you should set it to nil
 		self.xmlDoc = nil
 		
-		-- Register handlers for events, slash commands and timer, etc.
-		-- e.g. Apollo.RegisterEventHandler("KeyDown", "OnKeyDown", self)
-		--self.wndMain:Invoke()
 		Apollo.RegisterEventHandler("GameClickWorld", "OnGameClickWorld", self)
 		self.timer = ApolloTimer.Create(0.01, true, "OnTimer", self)
+
+		Apollo.RegisterEventHandler("Group_Join", "OnGroupStateChanged", self)
+		Apollo.RegisterEventHandler("Group_Left", "OnGroupStateChanged", self)
+		Apollo.RegisterEventHandler("Group_MemberFlagsChanged", "OnGroupStateChanged", self)
 
 
 		-- Do additional Addon initialization here
@@ -254,6 +254,33 @@ function WorldMarkers:GenMarkerPixie(i)
 			nOffsets = {screenPos.x-25,screenPos.y-25,screenPos.x+25,screenPos.y+25}
 		}
 	}
+end
+
+function WorldMarkers:FindGroupMember(name)
+	for i=1,GroupLib.GetMemberCount() do
+		local member = GroupLib.GetGroupMember(i)
+		if member.strCharacterName == name then
+			return member
+		end
+	end
+end
+
+function WorldMarkers:PlayerMayMark(name)
+	if GroupLib.InGroup() then
+		return self:FindGroupMember(name).bCanMark
+	else
+		return GameLib.GetPlayerUnit():GetName() == name
+	end
+end
+
+function WorldMarkers:UnitMayMark(unit)
+	return self:PlayerMayMark(unit:GetName())
+end
+
+function WorldMarkers:OnGroupStateChanged()
+	local mayMark = self:UnitMayMark(GameLib.GetPlayerUnit())
+	SendVarToRover("mayMark", mayMark)
+ 	self.wndPlacement:Show(mayMark, false)
 end
 
 
