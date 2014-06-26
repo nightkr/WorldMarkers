@@ -5,6 +5,7 @@
 require "Window"
 
 local glog, GeminiGUI
+local CHATPREFIX = "==WORLDMARKERS=="
 
 -----------------------------------------------------------------------------------------------
 -- WorldMarkers Module Definition
@@ -202,6 +203,8 @@ function WorldMarkers:OnDocLoaded()
 		Apollo.RegisterEventHandler("Group_Left", "OnGroupStateChanged", self)
 		Apollo.RegisterEventHandler("Group_MemberFlagsChanged", "OnGroupStateChanged", self)
 
+		Apollo.RegisterEventHandler("ChatMessage", "OnChatMessage", self)
+
 
 		-- Do additional Addon initialization here
 	end
@@ -231,18 +234,58 @@ function WorldMarkers:OnGameClickWorld(loc)
 	self:SetMarker(self.currentUpdateMarker, loc)
 end
 
-function WorldMarkers:ClearMarker(i)
+function WorldMarkers:ClearMarker(i, noBroadcast)
 	local marker = self.markers[i]
 	self.wndMain:DestroyPixie(marker.pixie)
 	marker.pixie = nil
 	marker.worldLoc = nil
+
+	if GroupLib.InGroup() and not noBroadcast then
+		ChatSystemLib.Command("/p "..CHATPREFIX.." clear "..i)
+	end
 end
 
-function WorldMarkers:SetMarker(i, loc)
+function WorldMarkers:SetMarker(i, loc, noBroadcast)
 	local marker = self.markers[i]
-	self:ClearMarker(i)
+	self:ClearMarker(i, true)
 	marker.worldLoc = loc
 	marker.pixie = self.wndMain:AddPixie(self:GenMarkerPixie(i))
+
+	if GroupLib.InGroup() and not noBroadcast then
+		ChatSystemLib.Command("/p "..CHATPREFIX.." set "..i.." "..loc.x.." "..loc.y.." "..loc.z)
+	end
+end
+
+function WorldMarkers:OnChatMessage(channel, msg)
+	local assembled = ""
+	local segs = msg.arMessageSegments
+	for i=1,#segs do
+		if assembled ~= "" then
+			assembled = assembled .. " "
+		end
+		assembled = assembled .. segs[i].strText
+	end
+
+	local words = {}
+	for word in assembled:gmatch("[^ ]+") do
+		table.insert(words, word)
+	end
+
+	SendVarToRover("words", words)
+
+	if words[1] == CHATPREFIX then
+		if words[2] == "set" then
+			local index = tonumber(words[3])
+			local x = tonumber(words[4])
+			local y = tonumber(words[5])
+			local z = tonumber(words[6])
+			local loc = Vector3.New(x,y,z)
+			self:SetMarker(index, loc, true)
+		elseif words[2] == "clear" then
+			local index = tonumber(words[3])
+			self:ClearMarker(index, true)
+		end
+	end
 end
 
 function WorldMarkers:GenMarkerPixie(i)
@@ -279,7 +322,6 @@ end
 
 function WorldMarkers:OnGroupStateChanged()
 	local mayMark = self:UnitMayMark(GameLib.GetPlayerUnit())
-	SendVarToRover("mayMark", mayMark)
  	self.wndPlacement:Show(mayMark, false)
 end
 
