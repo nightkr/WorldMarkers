@@ -142,13 +142,6 @@ function WorldMarkers:GetPlacementWidgets()
 		out[i] = widget
 	end
 
-	-- out[#out+1] = {
-	-- 	WidgetType = "PushButton",
-	-- 	Base = "CRB_UIKitSprites:btn_square_LARGE_Red",
-	-- 	AnchorPoints = {1, 0, 1, 0},
-	-- 	AnchorOffsets = {10+width,10,width,height}
-	-- }
-
 	out[#out+1] = {
 		WidgetType = "PushButton",
 		Base = "CRB_UIKitSprites:btn_close",
