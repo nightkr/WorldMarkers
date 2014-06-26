@@ -61,7 +61,7 @@ local WorldMarkers = {
 			text = "UFO"
 		}
 	},
-	currentUpdateMarker = 1
+	currentUpdateMarker = 0
 } 
  
 -----------------------------------------------------------------------------------------------
