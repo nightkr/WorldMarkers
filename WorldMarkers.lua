@@ -135,7 +135,7 @@ function WorldMarkers:GetPlacementWidgets()
 					self.currentUpdateMarker = i
 				end,
 				ButtonUncheck = function()
-					self.currentUpdateMarker = 0
+					self:EndMarkingMode()
 				end
 			}
 		}
@@ -223,6 +223,16 @@ function WorldMarkers:OnGameClickWorld(loc)
 	end
 	
 	self:SetMarker(self.currentUpdateMarker, loc)
+	self:EndMarkingMode()
+end
+
+function WorldMarkers:EndMarkingMode()
+	self.currentUpdateMarker = 0
+	local buttons = self.wndPlacement:GetChildren()
+	for i=1,#buttons do
+		SendVarToRover("a", buttons[i])
+		buttons[i]:SetCheck(false)
+	end
 end
 
 function WorldMarkers:ClearMarker(i, noBroadcast)
