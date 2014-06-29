@@ -340,6 +340,9 @@ end
 
 function WorldMarkers:OnGroupStateChanged()
 	local mayMark = self:UnitMayMark(GameLib.GetPlayerUnit())
+	if not mayMark then
+		self:EndMarkingMode()
+	end
  	self.wndPlacement:Show(mayMark, false)
 end
 
