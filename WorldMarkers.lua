@@ -149,9 +149,7 @@ function WorldMarkers:GetPlacementWidgets()
 		AnchorOffsets = {-30,0,0,height},
 		Events = {
 			ButtonUp = function()
-				for i=1,#self.markers do
-					self:ClearMarker(i)
-				end
+				self:ClearAllMarkers()
 			end
 		}
 	}
@@ -238,6 +236,16 @@ function WorldMarkers:ClearMarker(i, noBroadcast)
 	end
 end
 
+function WorldMarkers:ClearAllMarkers(noBroadcast)
+	for i=1,#self.markers do
+		self:ClearMarker(i, true)
+	end
+
+	if GroupLib.InGroup() and not noBroadcast then
+		ChatSystemLib.Command("/p "..CHATPREFIX.." clear all")
+	end
+end
+
 function WorldMarkers:SetMarker(i, loc, noBroadcast)
 	local marker = self.markers[i]
 	self:ClearMarker(i, true)
@@ -277,8 +285,12 @@ function WorldMarkers:OnChatMessage(channel, msg)
 			local loc = Vector3.New(x,y,z)
 			self:SetMarker(index, loc, true)
 		elseif words[2] == "clear" then
-			local index = tonumber(words[3])
-			self:ClearMarker(index, true)
+			if words[3] == "all" then
+				self:ClearAllMarkers(true)
+			else
+				local index = tonumber(words[3])
+				self:ClearMarker(index, true)
+			end
 		end
 	end
 end
