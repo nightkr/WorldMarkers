@@ -230,7 +230,6 @@ function WorldMarkers:EndMarkingMode()
 	self.currentUpdateMarker = 0
 	local buttons = self.wndPlacement:GetChildren()
 	for i=1,#buttons do
-		SendVarToRover("a", buttons[i])
 		buttons[i]:SetCheck(false)
 	end
 end
